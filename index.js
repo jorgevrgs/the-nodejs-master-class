@@ -26,8 +26,6 @@ const server = http.createServer(function (req, res) {
   //Get the headers as an object
   const headers = req.headers;
 
-  console.log(trimmedPath, queryStringObject, method, headers);
-
   // Get the payload,if any
   const decoder = new StringDecoder("utf-8");
   let buffer = "";
@@ -39,11 +37,37 @@ const server = http.createServer(function (req, res) {
   req.on("end", function () {
     buffer += decoder.end();
 
-    // Send the response
-    res.end("Hello World!\n");
+    // Check the router for a matching path for a handler. If one is not found, use the notFound handler instead.
+    const chosenHandler =
+      typeof router[trimmedPath] !== "undefined"
+        ? router[trimmedPath]
+        : handlers.notFound;
 
-    // Log the request/response
-    console.log("Request received with this payload: ", buffer);
+    // Construct the data object to send to the handler
+    const data = {
+      trimmedPath,
+      queryStringObject,
+      method,
+      headers,
+      payload: buffer,
+    };
+
+    // Route the request to the handler specified in the router
+    chosenHandler(data, function (statusCode, payload) {
+      // Use the status code returned from the handler, or set the default status code to 200
+      statusCode = typeof statusCode === "number" ? statusCode : 200;
+
+      // Use the payload returned from the handler, or set the default payload to an empty object
+      payload = typeof payload === "object" ? payload : {};
+
+      // Convert the payload to a string
+      const payloadString = JSON.stringify(payload);
+
+      // Return the response
+      res.writeHead(statusCode);
+      res.end(payloadString);
+      console.log("Returning this response: ", statusCode, payloadString);
+    });
   });
 });
 
@@ -51,3 +75,21 @@ const server = http.createServer(function (req, res) {
 server.listen(3000, function () {
   console.log("The server is up and running now");
 });
+
+// Define all the handlers
+let handlers = {};
+
+// Sample handler
+handlers.sample = function (data, callback) {
+  callback(406, { name: "sample handler" });
+};
+
+// Not found handler
+handlers.notFound = function (data, callback) {
+  callback(404);
+};
+
+// Define the request router
+const router = {
+  sample: handlers.sample,
+};

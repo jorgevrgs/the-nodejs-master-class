@@ -7,6 +7,7 @@
 const http = require("http");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
+const config = require("./config");
 
 // Configure the server to respond to all requests with a string
 const server = http.createServer(function (req, res) {
@@ -73,8 +74,10 @@ const server = http.createServer(function (req, res) {
 });
 
 // Start the server
-server.listen(3000, function () {
-  console.log("The server is up and running now");
+server.listen(config.port, function () {
+  console.log(
+    `The server is up and running on port ${config.port} in ${config.envName} mode.`
+  );
 });
 
 // Define all the handlers

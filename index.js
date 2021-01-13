@@ -11,6 +11,19 @@ const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
 const config = require("./config");
 
+// TESTING
+// const data = require("./lib/data");
+// data.create("test", "fileName", { foo: "bar" }, function (err) {
+//   console.log(err instanceof Error);
+//   console.error("An error occurred:", err);
+// });
+// data.read("test", "fileName2", function (err) {
+//   console.error("An error occurred:", err);
+// });
+// data.delete("test", "fileName", function (err) {
+//   console.error("An error occurred:", err);
+// });
+
 // Instantiate the HTTP server
 const httpServer = http.createServer(function (req, res) {
   unifiedServer(req, res);

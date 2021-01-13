@@ -4,25 +4,14 @@
  */
 
 // Dependencies
-const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
-const config = require("./config");
-
-// TESTING
-// const data = require("./lib/data");
-// data.create("test", "fileName", { foo: "bar" }, function (err) {
-//   console.log(err instanceof Error);
-//   console.error("An error occurred:", err);
-// });
-// data.read("test", "fileName2", function (err) {
-//   console.error("An error occurred:", err);
-// });
-// data.delete("test", "fileName", function (err) {
-//   console.error("An error occurred:", err);
-// });
+const config = require("./lib/config");
+const fs = require("fs");
+const handlers = require("./lib/handlers");
+const helpers = require("./lib/helpers");
 
 // Instantiate the HTTP server
 const httpServer = http.createServer(function (req, res) {
@@ -89,7 +78,7 @@ unifiedServer = function (req, res) {
       queryStringObject,
       method,
       headers,
-      payload: buffer,
+      payload: helpers.parseJsonToObject(buffer),
     };
 
     // Route the request to the handler specified in the router
@@ -112,26 +101,8 @@ unifiedServer = function (req, res) {
   });
 };
 
-// Define all the handlers
-let handlers = {};
-
-// Hello handler
-handlers.hello = function (data, callback) {
-  callback(200, { message: "Hello world!" });
-};
-
-// Ping handler
-handlers.ping = function (data, callback) {
-  callback(200);
-};
-
-// Not found handler
-handlers.notFound = function (data, callback) {
-  callback(404);
-};
-
 // Define the request router
 const router = {
-  hello: handlers.hello,
   ping: handlers.ping,
+  users: handlers.users,
 };

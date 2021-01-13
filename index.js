@@ -102,6 +102,11 @@ unifiedServer = function (req, res) {
 // Define all the handlers
 let handlers = {};
 
+// Hello handler
+handlers.hello = function (data, callback) {
+  callback(200, { message: "Hello world!" });
+};
+
 // Ping handler
 handlers.ping = function (data, callback) {
   callback(200);
@@ -114,5 +119,6 @@ handlers.notFound = function (data, callback) {
 
 // Define the request router
 const router = {
+  hello: handlers.hello,
   ping: handlers.ping,
 };

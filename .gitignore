@@ -106,3 +106,5 @@ dist
 *.DS_Store
 .data/test
 .data/**/*.json
+.logs/**/*.json
+.logs/**/*.gz.b64
